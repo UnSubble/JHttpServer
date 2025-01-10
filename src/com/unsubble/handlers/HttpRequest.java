@@ -1,7 +1,7 @@
 package com.unsubble.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HttpRequest {
 
@@ -10,6 +10,10 @@ public class HttpRequest {
     private String version;
     private List<HttpHeader> headers;
     private String body;
+
+    protected HttpRequest() {
+        headers = new ArrayList<>();
+    }
 
     protected void setMethod(HttpMethod method) {
         this.method = method;
