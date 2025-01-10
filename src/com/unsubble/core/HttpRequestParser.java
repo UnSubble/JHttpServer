@@ -23,9 +23,18 @@ public class HttpRequestParser {
 
         while ((sizeRead = in.read(tempBuffer)) != -1) {
             bufferStream.write(tempBuffer, 0, sizeRead);
+
             HttpRequest partialRequest = tryParse(bufferStream.toString(StandardCharsets.UTF_8));
             if (partialRequest != null) {
                 mergeRequests(requestObj, partialRequest);
+            }
+
+            if (requestObj.getBody() != null) {
+                String lengthStr = requestObj.getHeaderValue("Content-Length");
+                int length = lengthStr == null ? 0 : Integer.parseInt(lengthStr);
+                if (length == requestObj.getBody().length()) {
+                    break;
+                }
             }
         }
 
@@ -54,10 +63,13 @@ public class HttpRequestParser {
         }
 
         if (partialRequest.getBody() != null) {
-            mainRequest.setBody(partialRequest.getBody());
+            if (mainRequest.getBody() == null) {
+                mainRequest.setBody(partialRequest.getBody());
+            } else {
+                mainRequest.setBody(mainRequest.getBody() + partialRequest.getBody());
+            }
         }
     }
-
 
     private HttpRequest tryParse(String content) {
         try {
@@ -70,10 +82,13 @@ public class HttpRequestParser {
 
             if (requiresBody(requestObj.getMethod())) {
                 handleBodyIfAvailable(requestObj, content, headerEndIndex);
+            } else {
+                requestObj.setBody("");
             }
 
             return requestObj;
         } catch (Exception e) {
+            System.err.println("Error parsing HTTP request: " + e.getMessage());
         }
         return null;
     }

@@ -15,7 +15,7 @@ public final class ObjToString {
         for (String t : title) {
             buffer.append(t).append(" ");
         }
-        buffer.deleteCharAt(buffer.length()).append("\r\n");
+        buffer.deleteCharAt(buffer.length() - 1).append("\r\n");
         for (HttpHeader header : headers) {
             buffer.append(header.key()).append(": ").append(header.value()).append("\r\n");
         }

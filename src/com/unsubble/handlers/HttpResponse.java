@@ -10,6 +10,7 @@ public class HttpResponse {
     private final String version;
     private final List<HttpHeader> headers;
     private final String body;
+    public static final String VERSION = "HTTP/1.1";
 
     public HttpResponse(int statusCode, String reasonPhrase, String version, List<HttpHeader> headers, String body) {
         this.statusCode = statusCode;

@@ -17,8 +17,11 @@ public class HttpServer {
 
     public void start() {
         try (ServerSocket socket = new ServerSocket(port)) {
-            Socket client = socket.accept();
-            new Thread(new ConnectionHandler(client)).start();
+            while (true) {
+                Socket client = socket.accept();
+                client.setSoTimeout(5000);
+                new Thread(new ConnectionHandler(client)).start();
+            }
         } catch (IOException e) {
         }
     }

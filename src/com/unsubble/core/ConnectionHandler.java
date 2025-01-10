@@ -2,15 +2,18 @@ package com.unsubble.core;
 
 import com.unsubble.handlers.HttpRequest;
 import com.unsubble.handlers.HttpResponse;
+import com.unsubble.models.StaticFileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Path;
 
 public class ConnectionHandler implements Runnable {
 
     private final Socket clientSocket;
+    private static final Path PROJECT_PATH = Path.of(".").toAbsolutePath();
 
     public ConnectionHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -22,10 +25,9 @@ public class ConnectionHandler implements Runnable {
              OutputStream out = clientSocket.getOutputStream()) {
             HttpRequest request = new HttpRequestParser().parseWithStream(in);
 
-            
-
-            HttpResponse response = new HttpResponseBuilder()
-                    .build();
+            StaticFileHandler fileHandler = new StaticFileHandler(PROJECT_PATH.toString());
+            HttpResponse response  = fileHandler.handleRequest(
+                    PROJECT_PATH.resolve(request.getPath()).toString());
 
             out.write(response.toString().getBytes());
             out.flush();
