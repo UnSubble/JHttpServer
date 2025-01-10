@@ -7,9 +7,12 @@ import com.unsubble.handlers.HttpRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HttpRequestParser {
     private static final int BUFFER_SIZE = 8192; // 8 KB
@@ -42,7 +45,41 @@ public class HttpRequestParser {
             throw new IOException("Incomplete HTTP request received");
         }
 
+        processByMethod(requestObj);
+
         return requestObj;
+    }
+
+    private void processByMethod(HttpRequestImpl requestObj) {
+        switch (requestObj.getMethod()) {
+            case POST -> handlePostRequest(requestObj);
+        }
+    }
+
+    private void handlePostRequest(HttpRequestImpl request) {
+        String contentType = request.getHeaderValue("Content-Type");
+
+        if ("application/x-www-form-urlencoded".equals(contentType)) {
+            String body = request.getBody();
+            Map<String, String> formData = parseUrlEncodedBody(body);
+
+            request.setParameters(formData);
+            request.setBody("");
+        } else {
+            throw new UnsupportedOperationException("Unsupported Content-Type: " + contentType);
+        }
+    }
+
+    private Map<String, String> parseUrlEncodedBody(String body) {
+        Map<String, String> params = new HashMap<>();
+        String[] pairs = body.split("&");
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=");
+            if (keyValue.length == 2) {
+                params.put(keyValue[0], URLDecoder.decode(keyValue[1], StandardCharsets.UTF_8));
+            }
+        }
+        return params;
     }
 
     private void mergeRequests(HttpRequestImpl mainRequest, HttpRequest partialRequest) {
@@ -78,10 +115,10 @@ public class HttpRequestParser {
 
             handleStartLine(requestObj, lines);
 
-            int headerEndIndex = handleHeaders(requestObj, lines);
+            handleHeaders(requestObj, lines);
 
             if (requiresBody(requestObj.getMethod())) {
-                handleBodyIfAvailable(requestObj, content, headerEndIndex);
+                handleBodyIfAvailable(requestObj, content);
             } else {
                 requestObj.setBody("");
             }
@@ -97,7 +134,7 @@ public class HttpRequestParser {
         return method == HttpMethod.POST || method == HttpMethod.PUT;
     }
 
-    private void handleBodyIfAvailable(HttpRequestImpl requestObj, String content, int headerEndIndex) {
+    private void handleBodyIfAvailable(HttpRequestImpl requestObj, String content) {
         String contentLengthHeader = requestObj.getHeaderValue("Content-Length");
         if (contentLengthHeader != null) {
             int contentLength = Integer.parseInt(contentLengthHeader.trim());
@@ -110,7 +147,7 @@ public class HttpRequestParser {
         }
     }
 
-    private int handleHeaders(HttpRequestImpl requestObj, String[] lines) {
+    private void handleHeaders(HttpRequestImpl requestObj, String[] lines) {
         List<HttpHeader> headers = new ArrayList<>();
         int index = 1;
 
@@ -125,7 +162,6 @@ public class HttpRequestParser {
         }
 
         requestObj.setHeaders(headers);
-        return index + 1;
     }
 
     private void handleStartLine(HttpRequestImpl requestObj, String[] lines) {
@@ -167,6 +203,11 @@ public class HttpRequestParser {
         @Override
         public void setBody(String body) {
             super.setBody(body);
+        }
+
+        @Override
+        public void setParameters(Map<String, String> parameters) {
+            super.setParameters(parameters);
         }
     }
 }
