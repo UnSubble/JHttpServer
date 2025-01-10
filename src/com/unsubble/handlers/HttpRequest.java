@@ -1,5 +1,7 @@
 package com.unsubble.handlers;
 
+import com.unsubble.utils.ObjToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,13 +67,8 @@ public class HttpRequest {
 
     @Override
     public String toString() {
-        return "HttpRequest{" +
-                "method=" + method +
-                ", path='" + path + '\'' +
-                ", version='" + version + '\'' +
-                ", headers=" + headers +
-                ", body='" + body + '\'' +
-                '}';
+        return ObjToString.toString(new String[] {method.toString(), path, version},
+                headers, body);
     }
 
 }

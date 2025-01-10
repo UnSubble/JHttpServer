@@ -71,7 +71,7 @@ public enum HttpStatus {
     public static HttpStatus fromString(String reasonPhrase) {
         reasonPhrase = reasonPhrase.trim();
         for (HttpStatus status : HttpStatus.values()) {
-            if (status.toString().split(" ")[1].equalsIgnoreCase(reasonPhrase))
+            if (status.reasonPhrase.replace(' ', '_').equalsIgnoreCase(reasonPhrase))
                 return status;
         }
         throw new IllegalArgumentException("Unknown HTTP status reason phrase: " + reasonPhrase);
