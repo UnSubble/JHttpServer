@@ -1,4 +1,4 @@
 package com.unsubble.handlers;
 
-public class HttpHeader {
+public record HttpHeader(String key, String value) {
 }
