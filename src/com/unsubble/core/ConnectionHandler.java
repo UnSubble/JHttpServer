@@ -13,7 +13,7 @@ import java.nio.file.Path;
 public class ConnectionHandler implements Runnable {
 
     private final Socket clientSocket;
-    private static final Path PROJECT_PATH = Path.of(".").toAbsolutePath();
+    private static final Path ASSETS_PATH = Path.of("src/com/unsubble/assets").toAbsolutePath();
 
     public ConnectionHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -25,9 +25,9 @@ public class ConnectionHandler implements Runnable {
              OutputStream out = clientSocket.getOutputStream()) {
             HttpRequest request = new HttpRequestParser().parseWithStream(in);
 
-            StaticFileHandler fileHandler = new StaticFileHandler(PROJECT_PATH.toString());
+            StaticFileHandler fileHandler = new StaticFileHandler(ASSETS_PATH.toString());
             HttpResponse response  = fileHandler.handleRequest(
-                    PROJECT_PATH.resolve(request.getPath()).toString());
+                    ASSETS_PATH.resolve(request.getPath()).toString());
 
             out.write(response.toString().getBytes());
             out.flush();
