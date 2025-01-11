@@ -17,7 +17,7 @@ public class StaticFileHandler {
     }
 
     public HttpResponse handleRequest(String path) {
-        File file = new File(baseDir + path);
+        File file = new File(path);
         if (file.exists() && file.isFile()) {
             try {
                 String content = Files.readString(file.toPath());

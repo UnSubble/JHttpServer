@@ -56,7 +56,7 @@ public class ConfigHandler {
     public List<Path> getAssetsPackages() {
         if (assetsPackages == null) {
             try {
-                processConfigFiles();
+                handleConfigFiles();
             } catch (IOException | SAXException e) {
                 throw new RuntimeException(e);
             }
@@ -67,7 +67,7 @@ public class ConfigHandler {
     public List<Class<?>> getRequestHandlerClassPaths() {
         if (assetsPackages == null) {
             try {
-                processConfigFiles();
+                handleConfigFiles();
             } catch (IOException | SAXException e) {
                 throw new RuntimeException(e);
             }
@@ -75,7 +75,7 @@ public class ConfigHandler {
         return requestHandlerClasses;
     }
 
-    public void processConfigFiles() throws IOException, SAXException {
+    public void handleConfigFiles() throws IOException, SAXException {
         assetsPackages = new ArrayList<>();
         requestHandlerClasses = new ArrayList<>();
 

@@ -3,20 +3,21 @@ package com.unsubble.core;
 import com.unsubble.models.HttpRequest;
 import com.unsubble.models.HttpResponse;
 import com.unsubble.handlers.StaticFileHandler;
+import com.unsubble.utils.ReflectionUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.file.Path;
 
 public class ConnectionHandler implements Runnable {
 
     private final Socket clientSocket;
-    private static final Path ASSETS_PATH = Path.of("src/com/unsubble/assets").toAbsolutePath();
+    private final Router router;
 
-    public ConnectionHandler(Socket clientSocket) {
+    public ConnectionHandler(Socket clientSocket, Router router) {
         this.clientSocket = clientSocket;
+        this.router = router;
     }
 
     @Override
@@ -25,9 +26,18 @@ public class ConnectionHandler implements Runnable {
              OutputStream out = clientSocket.getOutputStream()) {
             HttpRequest request = new HttpRequestParser().parseWithStream(in);
 
-            StaticFileHandler fileHandler = new StaticFileHandler(ASSETS_PATH.toString());
-            HttpResponse response  = fileHandler.handleRequest(
-                    ASSETS_PATH.resolve(request.getPath()).toString());
+            Class<AbstractHandler> handlerClass = router.getHandler(request.getPath(), request.getMethod());
+            HttpResponse response;
+
+            if (handlerClass == null) {
+                StaticFileHandler fileHandler = new StaticFileHandler(router.getMainStaticAssetsPackage().toString());
+                response = fileHandler.handleRequest(
+                        router.getDefaultStaticAssetsPackage(request.getPath()).resolve(request.getPath()).toString());
+            } else {
+                AbstractHandler handler = (AbstractHandler) ReflectionUtil.newInstanceWithEmptyConstructor(handlerClass);
+                handler.initializeRouter(router);
+                response = handler.handle(request);
+            }
 
             out.write(response.toString().getBytes());
             out.flush();
