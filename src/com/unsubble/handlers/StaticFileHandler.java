@@ -1,8 +1,8 @@
-package com.unsubble.models;
+package com.unsubble.handlers;
 
 import com.unsubble.core.HttpResponseBuilder;
-import com.unsubble.handlers.HttpResponse;
-import com.unsubble.handlers.HttpStatus;
+import com.unsubble.models.HttpResponse;
+import com.unsubble.models.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;

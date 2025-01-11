@@ -1,8 +1,8 @@
 package com.unsubble.core;
 
-import com.unsubble.handlers.HttpRequest;
-import com.unsubble.handlers.HttpResponse;
-import com.unsubble.models.StaticFileHandler;
+import com.unsubble.models.HttpRequest;
+import com.unsubble.models.HttpResponse;
+import com.unsubble.handlers.StaticFileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;

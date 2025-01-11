@@ -1,8 +1,8 @@
 package com.unsubble.core;
 
-import com.unsubble.handlers.HttpHeader;
-import com.unsubble.handlers.HttpResponse;
-import com.unsubble.handlers.HttpStatus;
+import com.unsubble.models.HttpHeader;
+import com.unsubble.models.HttpResponse;
+import com.unsubble.models.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;

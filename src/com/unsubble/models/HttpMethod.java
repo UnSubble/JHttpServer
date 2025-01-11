@@ -1,4 +1,4 @@
-package com.unsubble.handlers;
+package com.unsubble.models;
 
 import java.util.NoSuchElementException;
 
