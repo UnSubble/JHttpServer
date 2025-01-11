@@ -64,7 +64,7 @@ public class ConfigHandler {
         return assetsPackages;
     }
 
-    public List<Class<?>> getRequestHandlerClassPaths() {
+    public List<Class<?>> getRequestHandlerClasses() {
         if (assetsPackages == null) {
             try {
                 handleConfigFiles();

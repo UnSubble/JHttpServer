@@ -3,9 +3,11 @@ package com.unsubble.core;
 import com.unsubble.handlers.CommonHandler;
 import com.unsubble.handlers.ConfigHandler;
 import com.unsubble.models.HttpMethod;
+import com.unsubble.utils.ReflectionUtil;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
@@ -35,11 +37,30 @@ public class HttpServer {
 
     public void start() {
         ConfigHandler handler = handleConfigFiles();
+
         List<Path> assetsPackages = handler.getAssetsPackages();
         assetsPackages.add(ASSETS_PATH);
+        List<Class<?>> requestHandlerClasses = handler.getRequestHandlerClasses();
+
         Router router = new Router(assetsPackages);
+        registerExternalHandlers(router, requestHandlerClasses);
         registerCommons(router);
+
         deadLoop(router);
+    }
+
+    private void registerExternalHandlers(Router router, List<Class<?>> requestHandlerClasses) {
+        for (Class<?> requestHandlerClass : requestHandlerClasses) {
+            if (ReflectionUtil.suits(AbstractHandler.class, requestHandlerClass)
+                    && ReflectionUtil.isAnnotationPresent(requestHandlerClass, RequestHandler.class)) {
+                RequestHandler requestHandlerAnnotation = requestHandlerClass.getAnnotation(RequestHandler.class);
+                String path = requestHandlerAnnotation.value();
+                HttpMethod[] methods = requestHandlerAnnotation.supportedMethods();
+                for (HttpMethod method : methods) {
+                    router.register(path, method, requestHandlerClass);
+                }
+            }
+        }
     }
 
     private void registerCommons(Router router) {
