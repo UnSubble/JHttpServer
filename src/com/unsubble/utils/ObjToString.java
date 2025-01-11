@@ -1,6 +1,6 @@
 package com.unsubble.utils;
 
-import com.unsubble.handlers.HttpHeader;
+import com.unsubble.models.HttpHeader;
 
 import java.util.List;
 

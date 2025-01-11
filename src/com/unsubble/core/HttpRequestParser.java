@@ -1,8 +1,8 @@
 package com.unsubble.core;
 
-import com.unsubble.handlers.HttpHeader;
-import com.unsubble.handlers.HttpMethod;
-import com.unsubble.handlers.HttpRequest;
+import com.unsubble.models.HttpHeader;
+import com.unsubble.models.HttpMethod;
+import com.unsubble.models.HttpRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
