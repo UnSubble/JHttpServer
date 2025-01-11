@@ -32,7 +32,7 @@ public class ConnectionHandler implements Runnable {
             if (handlerClass == null) {
                 StaticFileHandler fileHandler = new StaticFileHandler(router.getMainStaticAssetsPackage().toString());
                 response = fileHandler.handleRequest(
-                        router.getDefaultStaticAssetsPackage(request.getPath()).resolve(request.getPath()).toString());
+                        router.getDefaultStaticAssetsPackage(request.getPath()).toString());
             } else {
                 AbstractHandler handler = (AbstractHandler) ReflectionUtil.newInstanceWithEmptyConstructor(handlerClass);
                 handler.initializeRouter(router);

@@ -32,7 +32,6 @@ public class Router {
 
     @SuppressWarnings("unchecked")
     public Class<AbstractHandler> getHandler(String path, HttpMethod method) {
-        System.out.println(path);
         return (Class<AbstractHandler>) routes.getOrDefault(path, Collections.emptyMap()).get(method);
     }
 
