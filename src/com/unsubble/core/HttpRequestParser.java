@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpRequestParser {
+    private static final Logger LOGGER = Logger.getLogger(HttpRequestParser.class.getName());
     private static final int BUFFER_SIZE = 8192; // 8 KB
 
     public HttpRequest parseWithStream(InputStream in) throws IOException {
@@ -51,8 +51,9 @@ public class HttpRequestParser {
     }
 
     private void processByMethod(HttpRequestImpl requestObj) {
-        switch (requestObj.getMethod()) {
-            case POST -> handlePostRequest(requestObj);
+        HttpMethod method = Objects.requireNonNull(requestObj.getMethod());
+        if (method == HttpMethod.POST) {
+            handlePostRequest(requestObj);
         }
     }
 
@@ -125,7 +126,7 @@ public class HttpRequestParser {
 
             return requestObj;
         } catch (Exception e) {
-            System.err.println("Error parsing HTTP request: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error parsing HTTP request", e);
         }
         return null;
     }

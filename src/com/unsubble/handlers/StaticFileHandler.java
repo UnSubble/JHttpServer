@@ -7,9 +7,12 @@ import com.unsubble.models.HttpStatus;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class StaticFileHandler {
 
+    private static final Logger LOGGER = Logger.getLogger(StaticFileHandler.class.getName());
     private final String baseDir;
 
     public StaticFileHandler(String baseDir) {
@@ -29,6 +32,7 @@ public class StaticFileHandler {
                         .body(content)
                         .build();
             } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Error reading file", e);
                 return createErrorResponse();
             }
         } else {
@@ -78,6 +82,7 @@ public class StaticFileHandler {
                     .body(content)
                     .build();
         } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error reading 404 file", e);
             return createErrorResponse();
         }
     }

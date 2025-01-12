@@ -1,7 +1,6 @@
 package com.unsubble.core;
 
 import com.unsubble.models.HttpMethod;
-import com.unsubble.models.HttpResponse;
 
 import java.io.IOException;
 import java.nio.file.Files;

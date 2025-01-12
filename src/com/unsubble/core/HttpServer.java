@@ -7,14 +7,16 @@ import com.unsubble.utils.ReflectionUtil;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpServer {
 
+    private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
     public static final Path ASSETS_PATH = Path.of("src/com/unsubble/assets").toAbsolutePath();
     public static final Path ROOT = Path.of("/");
     private final int port;
@@ -75,6 +77,7 @@ public class HttpServer {
         try {
             configHandler.handleConfigFiles();
         } catch (IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, "An error occurred when handling given config files.", e);
             throw new RuntimeException(e);
         }
         return configHandler;
@@ -88,7 +91,7 @@ public class HttpServer {
                 new Thread(new ConnectionHandler(client, router)).start();
             }
         } catch (IOException e) {
-            // Do nothing...
+            LOGGER.log(Level.SEVERE, "Error in server socket", e);
         }
     }
 
