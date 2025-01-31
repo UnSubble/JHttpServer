@@ -13,6 +13,5 @@ public @interface RequestHandler {
     String value();
 
     HttpMethod[] supportedMethods() default
-            {HttpMethod.GET, HttpMethod.PUT,
-            HttpMethod.POST, HttpMethod.DELETE};
+            { HttpMethod.GET, HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH };
 }

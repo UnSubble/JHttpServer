@@ -31,7 +31,8 @@ public class Router {
 
     @SuppressWarnings("unchecked")
     public Class<AbstractHandler> getHandler(String path, HttpMethod method) {
-        return (Class<AbstractHandler>) routes.getOrDefault(path, Collections.emptyMap()).get(method);
+        return (Class<AbstractHandler>) routes.getOrDefault(path, Collections.emptyMap())
+                .getOrDefault(method, routes.get("/*").get(method));
     }
 
     private void resolveAssetsPackages(List<Path> assetsPackages) {

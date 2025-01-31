@@ -70,6 +70,7 @@ public class HttpServer {
         router.register("/", HttpMethod.POST, CommonHandler.class);
         router.register("/", HttpMethod.PUT, CommonHandler.class);
         router.register("/", HttpMethod.DELETE, CommonHandler.class);
+        router.register("/*", HttpMethod.OPTIONS, CommonHandler.class);
     }
 
     private ConfigHandler handleConfigFiles() {

@@ -7,7 +7,8 @@ public enum HttpMethod {
     POST,
     PUT,
     DELETE,
-    OPTIONS;
+    OPTIONS,
+    PATCH;
 
     public static HttpMethod fromString(String methodStr) {
         methodStr = methodStr.trim();
@@ -26,6 +27,7 @@ public enum HttpMethod {
             case PUT -> "PUT";
             case DELETE -> "DELETE";
             case OPTIONS -> "OPTIONS";
+            case PATCH -> "PATCH";
         };
     }
 }
