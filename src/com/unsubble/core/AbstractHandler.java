@@ -1,6 +1,7 @@
 package com.unsubble.core;
 
 import com.unsubble.handlers.StaticFileHandler;
+import com.unsubble.models.HttpMethod;
 import com.unsubble.models.HttpRequest;
 import com.unsubble.models.HttpResponse;
 import com.unsubble.models.HttpStatus;
@@ -16,6 +17,14 @@ public abstract class AbstractHandler implements Handler {
 
     final void initializeRouter(Router router) {
         this.router = router;
+    }
+
+    public final HttpResponse redirect(String newPath) {
+        return new HttpResponseBuilder()
+                .status(HttpStatus.MOVED_PERMANENTLY)
+                .addHeader("Location", newPath)
+                .body("")
+                .build();
     }
 
     public final HttpResponse dispatch(String newPath, HttpRequest request) {
